@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Medicines - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" th:replace="~{layout :: sidebar}"></aside>
+        
+        <main class="main-content">
+            <header class="main-header" th:replace="~{layout :: header}"></header>
+            
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1>All Medicines</h1>
+                        <p>View all medicine reminders in the system</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Medicine Name</th>
+                                        <th>Dosage</th>
+                                        <th>Frequency</th>
+                                        <th>User</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="medicine : ${medicines}">
+                                        <td th:text="${medicine.id}">1</td>
+                                        <td th:text="${medicine.name}">Medicine Name</td>
+                                        <td th:text="${medicine.dosage}">500mg</td>
+                                        <td th:text="${medicine.frequency}">DAILY</td>
+                                        <td th:text="${medicine.user.name}">User Name</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${medicine.active ? 'badge-green' : 'badge-gray'}" 
+                                                  th:text="${medicine.active ? 'Active' : 'Inactive'}">Active</span>
+                                        </td>
+                                        <td th:text="${#temporals.format(medicine.createdAt, 'MMM dd, yyyy')}">Jan 01, 2024</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${medicines.empty}" class="empty-state">
+                            <i class="fas fa-pills"></i>
+                            <p>No medicines found</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

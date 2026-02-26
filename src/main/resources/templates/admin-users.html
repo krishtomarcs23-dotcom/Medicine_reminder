@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" th:replace="~{layout :: sidebar}"></aside>
+        
+        <main class="main-content">
+            <header class="main-header" th:replace="~{layout :: header}"></header>
+            
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1>Manage Users</h1>
+                        <p>View and manage all registered users</p>
+                    </div>
+                </div>
+                
+                <div th:if="${param.blocked}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> User blocked successfully!
+                </div>
+                
+                <div th:if="${param.unblocked}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> User unblocked successfully!
+                </div>
+                
+                <div th:if="${param.deleted}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> User deleted successfully!
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <form th:action="@{/admin/users}" method="get" class="search-form">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" name="search" th:value="${search}" placeholder="Search users...">
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Search</button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="user : ${users}">
+                                        <td th:text="${user.id}">1</td>
+                                        <td th:text="${user.name}">John Doe</td>
+                                        <td th:text="${user.email}">john@example.com</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${user.role == 'ROLE_ADMIN'} ? 'badge-purple' : 'badge-blue'" 
+                                                  th:text="${user.role}">ROLE_USER</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge" th:classappend="${user.blocked ? 'badge-red' : 'badge-green'}" 
+                                                  th:text="${user.blocked ? 'Blocked' : 'Active'}">Active</span>
+                                        </td>
+                                        <td th:text="${#temporals.format(user.createdAt, 'MMM dd, yyyy')}">Jan 01, 2024</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <form th:if="${!user.blocked}" th:action="@{/admin/users/{id}/block(id=${user.id})}" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-warning btn-sm" title="Block">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
+                                                </form>
+                                                <form th:if="${user.blocked}" th:action="@{/admin/users/{id}/unblock(id=${user.id})}" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-success btn-sm" title="Unblock">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                <form th:if="${user.role != 'ROLE_ADMIN'}" th:action="@{/admin/users/{id}/delete(id=${user.id})}" method="post" style="display:inline;">
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${users.empty}" class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>No users found</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

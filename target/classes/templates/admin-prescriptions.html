@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Prescriptions - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" th:replace="~{layout :: sidebar}"></aside>
+        
+        <main class="main-content">
+            <header class="main-header" th:replace="~{layout :: header}"></header>
+            
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1>All Prescriptions</h1>
+                        <p>View all prescriptions in the system</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>File Name</th>
+                                        <th>Type</th>
+                                        <th>Size</th>
+                                        <th>User</th>
+                                        <th>Uploaded</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="prescription : ${prescriptions}">
+                                        <td th:text="${prescription.id}">1</td>
+                                        <td th:text="${prescription.originalFileName}">file.pdf</td>
+                                        <td th:text="${prescription.fileType}">application/pdf</td>
+                                        <td th:text="${prescription.fileSize / 1024 + ' KB'}">100 KB</td>
+                                        <td th:text="${prescription.user.name}">User Name</td>
+                                        <td th:text="${#temporals.format(prescription.uploadDate, 'MMM dd, yyyy HH:mm')}">Jan 01, 2024</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${prescriptions.empty}" class="empty-state">
+                            <i class="fas fa-file-medical"></i>
+                            <p>No prescriptions found</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

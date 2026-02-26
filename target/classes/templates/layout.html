@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Medicine Reminder</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div th:fragment="sidebar" class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-pills"></i>
+            <span>Medicine Reminder</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/dashboard}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a th:href="@{/medicines}"><i class="fas fa-capsules"></i> Medicines</a></li>
+            <li><a th:href="@{/prescriptions}"><i class="fas fa-file-medical"></i> Prescriptions</a></li>
+            <li><a th:href="@{/admin}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:fragment="header" class="main-header">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-right">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="toast" class="toast-container" id="toastContainer">
+        <div th:if="${message}" class="toast toast-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${message}">Success message</span>
+        </div>
+        <div th:if="${error}" class="toast toast-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}">Error message</span>
+        </div>
+    </div>
+</body>
+</html>

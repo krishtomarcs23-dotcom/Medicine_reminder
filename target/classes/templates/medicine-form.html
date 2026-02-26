@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${medicineDTO.id != null ? 'Edit Medicine' : 'Add Medicine'}">Medicine Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" th:replace="~{layout :: sidebar}"></aside>
+        
+        <main class="main-content">
+            <header class="main-header" th:replace="~{layout :: header}"></header>
+            
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 th:text="${medicineDTO.id != null ? 'Edit Medicine' : 'Add Medicine'}">Medicine</h1>
+                        <p>Configure your medication reminder</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="${medicineDTO.id != null ? '/medicines/' + medicineDTO.id : '/medicines'}" 
+                              th:object="${medicineDTO}" method="post" class="medicine-form">
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="name">Medicine Name *</label>
+                                    <input type="text" id="name" th:field="*{name}" placeholder="e.g., Aspirin" required>
+                                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-text"></span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="dosage">Dosage *</label>
+                                    <input type="text" id="dosage" th:field="*{dosage}" placeholder="e.g., 500mg" required>
+                                    <span th:if="${#fields.hasErrors('dosage')}" th:errors="*{dosage}" class="error-text"></span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="frequency">Frequency *</label>
+                                    <select id="frequency" th:field="*{frequency}" required>
+                                        <option value="">Select frequency</option>
+                                        <option value="DAILY">Daily</option>
+                                        <option value="WEEKLY">Weekly</option>
+                                        <option value="CUSTOM">Custom</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}" class="error-text"></span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" id="startDate" th:field="*{startDate}">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="endDate">End Date</label>
+                                    <input type="date" id="endDate" th:field="*{endDate}">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Reminder Times</label>
+                                <div class="reminder-times-container">
+                                    <div class="reminder-time-input" id="reminderTimesContainer">
+                                        <div class="reminder-time-row">
+                                            <input type="time" name="reminderTimes" class="reminder-time">
+                                            <button type="button" class="btn btn-icon" onclick="addReminderTime()">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notes">Notes</label>
+                                <textarea id="notes" th:field="*{notes}" rows="3" placeholder="Additional instructions..."></textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <a th:href="@{/medicines}" class="btn btn-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Medicine
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script th:src="@{/js/main.js}"></script>
+    <script>
+        function addReminderTime() {
+            const container = document.getElementById('reminderTimesContainer');
+            const row = document.createElement('div');
+            row.className = 'reminder-time-row';
+            row.innerHTML = `
+                <input type="time" name="reminderTimes" class="reminder-time">
+                <button type="button" class="btn btn-icon btn-danger" onclick="this.parentElement.remove()">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(row);
+        }
+    </script>
+</body>
+</html>

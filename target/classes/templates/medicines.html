@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicines - Medicine Reminder</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" th:replace="~{layout :: sidebar}"></aside>
+        
+        <main class="main-content">
+            <header class="main-header" th:replace="~{layout :: header}"></header>
+            
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1>My Medicines</h1>
+                        <p>Manage your medication reminders</p>
+                    </div>
+                    <a th:href="@{/medicines/new}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Medicine
+                    </a>
+                </div>
+                
+                <div th:if="${param.success}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> Medicine saved successfully!
+                </div>
+                
+                <div th:if="${param.deleted}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> Medicine deleted successfully!
+                </div>
+                
+                <div th:if="${param.error}" class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <div th:if="${medicines.empty}" class="empty-state">
+                            <i class="fas fa-pills"></i>
+                            <h3>No medicines yet</h3>
+                            <p>Add your first medicine reminder to get started</p>
+                            <a th:href="@{/medicines/new}" class="btn btn-primary">Add Medicine</a>
+                        </div>
+                        
+                        <div class="medicine-grid" th:unless="${medicines.empty}">
+                            <div class="medicine-card" th:each="medicine : ${medicines}">
+                                <div class="medicine-header">
+                                    <div class="medicine-icon">
+                                        <i class="fas fa-pills"></i>
+                                    </div>
+                                    <div class="medicine-info">
+                                        <h3 th:text="${medicine.name}">Medicine Name</h3>
+                                        <span class="badge" th:classappend="${medicine.active ? 'badge-success' : 'badge-gray'}" 
+                                              th:text="${medicine.active ? 'Active' : 'Inactive'}">Active</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="medicine-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-prescription-bottle"></i>
+                                        <span th:text="${medicine.dosage}">Dosage</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span th:text="${medicine.frequency}">Frequency</span>
+                                    </div>
+                                    <div class="detail-item" th:if="${medicine.startDate}">
+                                        <i class="fas fa-calendar"></i>
+                                        <span th:text="${#temporals.format(medicine.startDate, 'MMM dd, yyyy')}">Start Date</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="medicine-actions">
+                                    <a th:href="@{/medicines/{id}/edit(id=${medicine.id})}" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <button th:onclick="'confirmDelete(' + ${medicine.id} + ')'" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h3>Delete Medicine</h3>
+            <p>Are you sure you want to delete this medicine reminder? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <a id="deleteLink" href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/main.js}"></script>
+    <script>
+        function confirmDelete(id) {
+            document.getElementById('deleteLink').href = '/medicines/' + id + '/delete';
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
